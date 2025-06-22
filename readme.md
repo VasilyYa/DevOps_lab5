@@ -37,6 +37,7 @@
 5. Билдим докер-образ согласно dockerfile.
 
 > docker build -t nginx-devops .
+
 (nginx-devops - тег/метка)
 
 6. Создаем и запускаем контейнер
