@@ -26,11 +26,10 @@
 
 2. Создаем dockerfile.
 
-3. Создаем самоподписанный сертификат в директории cert лабы (для доп. задания)
+3. Создаем самоподписанный сертификат в директории cert лабы (для доп. задания). 
+Используем OpenSSL - на выходе сертификат cert.pem и приватный ключ key.pem.
 
-> openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 3650 -nodes -subj "/C=XX/ST=PermskiyKrai/L=Perm/O=DevOpsCompany/OU=AAA/CN=nginx-devops"
-
-(с помощью OpenSSL создали сертификат cert.pem и приватный ключ key.pem) 
+> openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 30 -nodes -subj "/C=XX/ST=PermskiyKrai/L=Perm/O=DevOpsCompany/OU=AAA/CN=nginx-devops"
 
 4. Создаем конфиг nginx (nginx.conf) в корне директории лабы. Заполняем в нем необходимые директивы. В том числе создаем секцию для https-запросов (для доп. задания)
 
@@ -50,6 +49,12 @@
 
 > curl --insecure https://127.0.0.1:4322
 
+8. Пишем скрипт scripts/renew-ssl-cert.sh, пересоздающий сертификат, заменяющий его в директории с сертификатом cert и перезагружающий конфигурацию nginx в контейнере. 
 
+9. Проверяем, руками запуская скрипт и осуществляя запросы по п.7. Также проверяем сроки действия сертификата с помощью команды
+
+> echo | openssl s_client -connect 127.0.0.1:4322 -servername 127.0.0.1 -showcerts 2>/dev/null | openssl x509 -noout -dates
+
+Данный скрипт можно далее поставить на cron, либо модифицировать, добавив в него проверку срока действия сертификата перед обновлением на новый.
 
 
